@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Live Match</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    background: linear-gradient(to right, #0f172a, #1e3a8a);
+    color: rgb(255, 255, 255);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+  }
+
+  a {
+    color: gold;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .match-box {
+    max-width: 600px;
+    margin: 30px auto;
+    background: rgba(0,0,0,0.35);
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  input {
+    width: 45%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  input {
+  background: rgb(216, 169, 14);        /* makes the box white */
+  color: rgb(0, 0, 0);             /* makes the text inside black */
+}
+  .clock {
+    font-size: 22px;
+    margin-top: 10px;
+  }
+
+  .score {
+    font-size: 42px;
+    margin: 15px 0;
+  }
+
+  button {
+    background: gold;
+    color: black;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .events {
+    background: #020617;
+    padding: 10px;
+    height: 220px;
+    overflow-y: auto;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 14px;
+  }
+</style>
+</head>
+
+<body>
+
+<br>
+<a href="fixtures.html">← Back to Fixtures</a>
+
+<div class="match-box">
+
+  <!-- TEAM INPUTS -->
+  <div>
+    <input id="homeInput" placeholder="Home Team">
+    <input id="awayInput" placeholder="Away Team">
+  </div>
+
+  <h2 id="teams">Live Match</h2>
+  <div class="clock" id="clock">0'</div>
+
+  <div class="score">
+    <span id="scoreA">0</span> - <span id="scoreB">0</span>
+  </div>
+
+  <button onclick="startMatch()">Start Match</button>
+
+  <div class="events" id="events"></div>
+</div>
+
+<script>
+/* ===============================
+   MATCH VARIABLES
+================================ */
+let teamA = "";
+let teamB = "";
+let minute = 0;
+let scoreA = 0;
+let scoreB = 0;
+let matchInterval = null;
+let maxGoals = 0;
+
+/* ===============================
+   START MATCH
+================================ */
+function startMatch() {
+  teamA = document.getElementById("homeInput").value.trim();
+  teamB = document.getElementById("awayInput").value.trim();
+
+  if (!teamA || !teamB) {
+    alert("Please enter both teams");
+    return;
+  }
+
+  document.getElementById("teams").innerText = teamA + " vs " + teamB;
+  document.getElementById("events").innerHTML = "";
+  document.getElementById("clock").innerText = "0'";
+
+  minute = 0;
+  scoreA = 0;
+  scoreB = 0;
+  maxGoals = Math.floor(Math.random() * 5) + 1;
+
+  document.getElementById("scoreA").innerText = 0;
+  document.getElementById("scoreB").innerText = 0;
+
+  clearInterval(matchInterval);
+  addEvent("Kick-off!");
+
+  matchInterval = setInterval(runMatch, 1000);
+}
+
+/* ===============================
+   MATCH LOOP
+================================ */
+function runMatch() {
+  if (minute >= 90) {
+    clearInterval(matchInterval);
+    addEvent("FULL TIME");
+    return;
+  }
+
+  minute++;
+  document.getElementById("clock").innerText = minute + "'";
+
+  let goalChance = 0.015;
+  if (minute > 70) goalChance = 0.04;
+
+  if ((scoreA + scoreB) < maxGoals && Math.random() < goalChance) {
+    scoreGoal();
+  }
+}
+
+/* ===============================
+   SCORE GOAL
+================================ */
+function scoreGoal() {
+  if (Math.abs(scoreA - scoreB) >= 3) return;
+
+  if (Math.random() < 0.5) {
+    scoreA++;
+    document.getElementById("scoreA").innerText = scoreA;
+    addEvent(minute + "' GOAL! " + teamA);
+  } else {
+    scoreB++;
+    document.getElementById("scoreB").innerText = scoreB;
+    addEvent(minute + "' GOAL! " + teamB);
+  }
+}
+
+/* ===============================
+   ADD EVENT
+================================ */
+function addEvent(text) {
+  const events = document.getElementById("events");
+  const div = document.createElement("div");
+  div.textContent = text;
+  events.prepend(div);
+}
+</script>
+
+</body>
+</html>

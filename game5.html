@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game 5 - Dino Runner</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    margin: 0;
+    background: linear-gradient(to bottom, #87ceeb, #c0e6ff);
+    font-family: sans-serif;
+  }
+  header {
+    background: #f59e0b;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  canvas {
+    display: block;
+    margin: 2rem auto;
+    background: #f3f4f6; /* light ground color */
+    border: 4px solid #fbbf24;
+    border-radius: 12px;
+  }
+  .back-button {
+    text-align: center;
+    margin: 1rem;
+  }
+  .back-button a {
+    background: #fbbf24;
+    color: #1a202c;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .back-button a:hover {
+    background: #f59e0b;
+  }
+</style>
+</head>
+<body>
+
+<header>Game 5 - Dino Runner</header>
+
+<div class="back-button">
+  <a href="index.html">← Back to Hub</a>
+</div>
+
+<canvas id="gameCanvas" width="600" height="200"></canvas>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let dino = { x: 50, y: 150, width: 30, height: 30, velocity: 0, jumpPower: -10, grounded: true };
+const gravity = 0.5;
+
+let obstacles = [];
+let frame = 0;
+let score = 0;
+let gameOver = false;
+
+// Jump on spacebar
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') {
+    if (dino.grounded) {
+      dino.velocity = dino.jumpPower;
+      dino.grounded = false;
+    }
+    if (gameOver) restartGame();
+  }
+});
+
+// Restart game
+function restartGame() {
+  dino.y = 150;
+  dino.velocity = 0;
+  dino.grounded = true;
+  obstacles = [];
+  frame = 0;
+  score = 0;
+  gameOver = false;
+}
+
+// Game update
+function update() {
+  if (gameOver) return;
+
+  // Dino physics
+  dino.velocity += gravity;
+  dino.y += dino.velocity;
+  if (dino.y >= 150) {
+    dino.y = 150;
+    dino.velocity = 0;
+    dino.grounded = true;
+  }
+
+  // Spawn obstacles
+  if (frame % 90 === 0) {
+    const height = Math.random() * 30 + 20;
+    obstacles.push({ x: canvas.width, y: 150 - height, width: 20, height });
+  }
+
+  // Move obstacles & collision
+  obstacles.forEach((obs, i) => {
+    obs.x -= 5;
+    if (
+      dino.x < obs.x + obs.width &&
+      dino.x + dino.width > obs.x &&
+      dino.y + dino.height > obs.y
+    ) {
+      gameOver = true;
+    }
+    if (obs.x + obs.width < 0) {
+      obstacles.splice(i, 1);
+      score++;
+    }
+  });
+
+  frame++;
+}
+
+// Draw everything
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Ground
+  ctx.fillStyle = '#4b5563';
+  ctx.fillRect(0, 180, canvas.width, 20);
+
+  // Dino
+  ctx.fillStyle = '#f59e0b';
+  ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+  // Obstacles
+  ctx.fillStyle = '#22c55e';
+  obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
+
+  // Score
+  ctx.fillStyle = '#000';
+  ctx.font = '20px sans-serif';
+  ctx.fillText('Score: ' + score, 10, 25);
+
+  // Game Over
+  if (gameOver) {
+    ctx.fillStyle = 'red';
+    ctx.font = '30px sans-serif';
+    ctx.fillText('GAME OVER', 180, 100);
+    ctx.font = '18px sans-serif';
+    ctx.fillText('Press SPACE to restart', 180, 130);
+  }
+}
+
+// Game loop
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>

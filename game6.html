@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game 6 - Maze Escape</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { 
+    margin: 0; 
+    background: linear-gradient(to bottom, #1e40af, #3b82f6); 
+    font-family: sans-serif; 
+  }
+  header {
+    background: #f59e0b;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .back-button {
+    text-align: center;
+    margin: 1rem;
+  }
+  .back-button a {
+    background: #fbbf24;
+    color: #1a202c;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .back-button a:hover {
+    background: #f59e0b;
+  }
+  canvas {
+    display: block;
+    margin: 2rem auto;
+    background: #e5e7eb; /* light floor color */
+    border: 4px solid #fbbf24;
+    border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>Game 6 - Maze Escape</header>
+
+<div class="back-button">
+  <a href="index.html">← Back to Hub</a>
+</div>
+
+<canvas id="gameCanvas" width="600" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+const tileSize = 40;
+const rows = 15;
+const cols = 15;
+
+// Maze array: 0 = path, 1 = wall
+const maze = [
+  [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [0,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+  [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
+  [1,0,1,0,0,0,0,0,1,0,0,0,1,0,0],
+  [1,0,1,1,1,1,1,0,1,1,1,0,1,1,0],
+  [1,0,0,0,0,0,1,0,0,0,1,0,0,1,0],
+  [1,1,1,1,1,0,1,1,1,0,1,1,0,1,0],
+  [1,0,0,0,1,0,0,0,1,0,0,1,0,1,0],
+  [1,0,1,0,1,1,1,0,1,1,0,1,0,1,0],
+  [1,0,1,0,0,0,1,0,0,1,0,1,0,0,0],
+  [1,0,1,1,1,0,1,1,0,1,0,1,1,1,0],
+  [1,0,0,0,1,0,0,0,0,1,0,0,0,1,0],
+  [1,1,1,0,1,1,1,1,0,1,1,1,0,1,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,0]
+];
+
+let player = { x: 0, y: 0, size: tileSize, color: '#f59e0b' };
+const exit = { x: 14, y: 14 };
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowUp') tryMove(0,-1);
+  if (e.code === 'ArrowDown') tryMove(0,1);
+  if (e.code === 'ArrowLeft') tryMove(-1,0);
+  if (e.code === 'ArrowRight') tryMove(1,0);
+});
+
+function tryMove(dx, dy) {
+  const newX = player.x + dx;
+  const newY = player.y + dy;
+  if (newX >= 0 && newX < cols && newY >= 0 && newY < rows) {
+    if (maze[newY][newX] === 0) {
+      player.x = newX;
+      player.y = newY;
+      if (player.x === exit.x && player.y === exit.y) {
+        setTimeout(() => alert('You escaped the maze! 🎉'), 10);
+      }
+    }
+  }
+}
+
+function drawMaze() {
+  for (let y=0; y<rows; y++) {
+    for (let x=0; x<cols; x++) {
+      if (maze[y][x] === 1) ctx.fillStyle = '#374151'; // wall
+      else ctx.fillStyle = '#e5e7eb'; // path
+      ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
+      ctx.strokeStyle = '#9ca3af';
+      ctx.strokeRect(x*tileSize, y*tileSize, tileSize, tileSize);
+    }
+  }
+
+  // Exit
+  ctx.fillStyle = '#22c55e';
+  ctx.fillRect(exit.x*tileSize, exit.y*tileSize, tileSize, tileSize);
+
+  // Player
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x*tileSize, player.y*tileSize, player.size, player.size);
+}
+
+function loop() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawMaze();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>

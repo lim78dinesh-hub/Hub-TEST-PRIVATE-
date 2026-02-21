@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TNAS Hub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html { scroll-behavior: smooth; }
+</style>
+</head>
+<body class="bg-gradient-to-b from-purple-100 to-blue-100 font-sans">
+
+  <!-- Header -->
+  <header class="bg-purple-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold">TNAS Hub</h1>
+      <nav>
+        <a href="#info-section" class="mr-4 hover:underline">Info</a>
+        <a href="#games-section" class="hover:underline">Games</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Info Section -->
+  <section id="info-section" class="p-8 mt-8">
+    <h2 class="text-2xl font-bold mb-6">Info</h2>
+    <div id="info-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <!-- Info cards will load here -->
+    </div>
+  </section>
+
+  <!-- Games Section -->
+  <section id="games-section" class="p-8 mt-12">
+    <h2 class="text-2xl font-bold mb-6">Games</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <a href="game1.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-purple-700">
+        Catch The Ball
+      </a>
+      <a href="game2.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-purple-700">
+        Dodge The Blocks
+      </a>
+      <a href="game3.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-yellow-600">
+  Avoid The Traffic
+</a>
+<a href="game4.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-yellow-600">
+  Flappy Bird
+</a>
+<a href="game5.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-yellow-600">
+Dino Runner
+</a>
+<a href="game6.html" class="block bg-white p-6 rounded-lg shadow-lg hover:scale-105 transform transition text-center font-bold text-yellow-600">
+Maze Escape
+</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-purple-600 text-white text-center p-4 mt-12">
+    &copy; 2026 My Game Hub
+  </footer>
+
+  <!-- JavaScript for Info Section -->
+  <script>
+    const infoData = [
+      { title: "About Me", content: "Hi! I'm a game developer and I love making fun interactive games for the web." },
+      { title: "Projects", content: "I’ve made games like Game 1 and Game 2. More coming soon!" },
+      { title: "Contact", content: "You can reach me at myemail@example.com or via GitHub." },
+      { title: "Skills", content: "HTML, CSS, JavaScript, Tailwind CSS, Phaser.js." },
+      { title: "Goals", content: "Create more interactive games and share them online!" }
+    ];
+
+    const container = document.getElementById('info-container');
+    infoData.forEach(item => {
+      const card = document.createElement('div');
+      card.className = "bg-white p-4 rounded shadow hover:shadow-lg transition";
+
+      const title = document.createElement('h3');
+      title.textContent = item.title;
+      title.className = "text-xl font-semibold mb-2";
+
+      const content = document.createElement('p');
+      content.textContent = item.content;
+      content.className = "text-gray-700";
+
+      card.appendChild(title);
+      card.appendChild(content);
+      container.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
+
+<!-- TNAS League Section -->
+<section id="tnas-league" class="p-8 mt-12">
+  <h2 class="text-2xl font-bold mb-6">TNAS League</h2>
+
+  <div class="flex flex-col sm:flex-row gap-4">
+    <!-- Example buttons -->
+    <a href="table.html" class="bg-purple-600 text-white px-6 py-3 rounded shadow hover:bg-purple-700 transition text-center font-semibold">
+      TNAS League Table
+
+    <!-- Recent Matches Button -->
+    <a href="matches.html" class="bg-purple-600 text-white px-6 py-3 rounded shadow hover:bg-purple-700 transition text-center font-semibold">
+      Matches
+    </a>
+    
+      <!-- Live Fixtures Button -->
+    <a href="live-match.html" class="bg-purple-600 text-white px-6 py-3 rounded shadow hover:bg-purple-700 transition text-center font-semibold">
+      Live Fixtures
+    </a>
+  </div>
+</section>
+    </a>
+  </div>
+</section>

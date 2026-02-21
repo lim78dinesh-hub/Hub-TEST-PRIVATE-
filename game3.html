@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game 3 - Avoid the Traffic</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { 
+    margin: 0; 
+    background: linear-gradient(to bottom, #111827, #374151); 
+    font-family: sans-serif; 
+  }
+  canvas {
+    display: block;
+    margin: 2rem auto;
+    background: #9ca3af; /* road color */
+    border: 4px solid #fbbf24;
+    border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header class="bg-yellow-500 text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-50">
+  <h1 class="text-2xl font-bold">Game 3 - Avoid the Traffic</h1>
+  <a href="index.html" class="bg-white text-yellow-500 px-4 py-2 rounded hover:bg-yellow-100">Back to Hub</a>
+</header>
+
+<main>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <p class="text-center text-gray-100 mb-8">
+    Use the ← and → arrow keys to move your car. Avoid the other cars and survive as long as you can!
+  </p>
+</main>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let player = { x: 170, y: 500, width: 60, height: 100, speed: 7 };
+let obstacles = [];
+let score = 0;
+let frameCount = 0;
+let spawnRate = 90; // frames between new cars
+
+function drawPlayer() {
+  ctx.fillStyle = "#f59e0b"; // player car
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+}
+
+function drawObstacles() {
+  obstacles.forEach(obs => {
+    ctx.fillStyle = "#ef4444"; // other cars
+    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+  });
+}
+
+function drawScore() {
+  ctx.fillStyle = "#fff";
+  ctx.font = "24px sans-serif";
+  ctx.fillText("Score: " + score, 10, 30);
+}
+
+function update() {
+  frameCount++;
+
+  // Spawn new obstacles
+  if(frameCount % spawnRate === 0) {
+    const lane = Math.floor(Math.random() * 4); // 4 lanes
+    obstacles.push({ x: lane*100 + 20, y: -120, width: 60, height: 100, speed: 5 + score*0.1 });
+  }
+
+  // Move obstacles
+  obstacles.forEach((obs, i) => {
+    obs.y += obs.speed;
+
+    // Collision detection
+    if(obs.x < player.x + player.width &&
+       obs.x + obs.width > player.x &&
+       obs.y < player.y + player.height &&
+       obs.y + obs.height > player.y) {
+      alert("Game Over! Your score: " + score);
+      score = 0;
+      obstacles = [];
+      frameCount = 0;
+    }
+
+    // Remove off-screen cars
+    if(obs.y > canvas.height) {
+      obstacles.splice(i,1);
+      score++;
+    }
+  });
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawPlayer();
+  drawObstacles();
+  drawScore();
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+// Player controls
+document.addEventListener("keydown", e => {
+  if(e.key === "ArrowLeft" && player.x > 0) player.x -= player.speed;
+  if(e.key === "ArrowRight" && player.x + player.width < canvas.width) player.x += player.speed;
+});
+
+gameLoop();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<script>
+const teams = [
+"VRToyFreddy","SpringTrap","Shadow Freddy","Freddy","Foxy",
+"Error Toy Bonnie","Mugman","Golden Freddy","Nightmare Bonnie","Toy Bonnie",
+"Jack O Bonnie 1","Jack O Bonnie 2","Withered Bonnie","HighScore Chica",
+"Tiedye SpringTrap","Nightmare Foxy","Pikachu","Nightmare Freddy",
+"Chica","Bonnie","Lizzy","Ice Fruit","Blastoise","Raquaza",
+"Funtime Foxy","Radioactive Foxy","Funtime Freddy","Gengar",
+"Rockstar","Charmander"
+];
+
+/* ===============================
+   INIT TABLE
+================================ */
+let table = {};
+teams.forEach(t => {
+  table[t] = { P:0, W:0, D:0, L:0, GF:0, GA:0, GD:0, Pts:0 };
+});
+
+/* ===============================
+   LOAD RESULTS
+================================ */
+const results = JSON.parse(localStorage.getItem("results")) || [];
+
+results.forEach(match => {
+  const h = table[match.home];
+  const a = table[match.away];
+
+  if (!h || !a) return;
+
+  h.P++; a.P++;
+  h.GF += match.homeGoals;
+  h.GA += match.awayGoals;
+  a.GF += match.awayGoals;
+  a.GA += match.homeGoals;
+
+  if (match.homeGoals > match.awayGoals) {
+    h.W++; a.L++;
+    h.Pts += 3;
+  } else if (match.homeGoals < match.awayGoals) {
+    a.W++; h.L++;
+    a.Pts += 3;
+  } else {
+    h.D++; a.D++;
+    h.Pts++; a.Pts++;
+  }
+});
+
+/* ===============================
+   CALC GD
+================================ */
+teams.forEach(t => {
+  table[t].GD = table[t].GF - table[t].GA;
+});
+
+/* ===============================
+   SORT TABLE
+================================ */
+const sorted = teams.sort((a,b) =>
+  table[b].Pts - table[a].Pts ||
+  table[b].GD - table[a].GD ||
+  table[b].GF - table[a].GF
+);
+
+/* ===============================
+   RENDER TABLE
+================================ */
+const tbody = document.querySelector("tbody");
+tbody.innerHTML = "";
+
+sorted.forEach((team, i) => {
+  const d = table[team];
+  const tr = document.createElement("tr");
+
+  if (i >= sorted.length - 3) tr.classList.add("relegation");
+
+  tr.innerHTML = `
+    <td>${i+1}</td>
+    <td>${team}</td>
+    <td>${d.P}</td>
+    <td>${d.W}</td>
+    <td>${d.D}</td>
+    <td>${d.L}</td>
+    <td>${d.GF}</td>
+    <td>${d.GA}</td>
+    <td>${d.GD}</td>
+    <td>${d.Pts}</td>
+  `;
+  tbody.appendChild(tr);
+});
+</script>

@@ -1,0 +1,14 @@
+[
+  {
+    "title": "About Me",
+    "content": "Hi! I'm a game developer and I love making fun interactive games for the web."
+  },
+  {
+    "title": "Projects",
+    "content": "I’ve made games like Game 1 and Game 2. More coming soon!"
+  },
+  {
+    "title": "Contact",
+    "content": "You can reach me at myemail@example.com or via GitHub."
+  }
+]

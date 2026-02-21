@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Auto Fixtures</title>
+<style>
+body {
+  background: #020617;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+button {
+  background: gold;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Generate Next Match</h2>
+<button onclick="generateMatch()">Next Match</button>
+
+<p id="info"></p>
+
+<script>
+/* ===============================
+   ALL 30 TEAMS
+================================ */
+const teams = [
+"VRToyFreddy","SpringTrap","Shadow Freddy","Freddy","Foxy",
+"Error Toy Bonnie","Mugman","Golden Freddy","Nightmare Bonnie","Toy Bonnie",
+"Jack O Bonnie 1","Jack O Bonnie 2","Withered Bonnie","HighScore Chica",
+"Tiedye SpringTrap","Nightmare Foxy","Pikachu","Nightmare Freddy",
+"Chica","Bonnie","Lizzy","Ice Fruit","Blastoise","Raquaza",
+"Funtime Foxy","Radioactive Foxy","Funtime Freddy","Gengar",
+"Rockstar","Charmander"
+];
+
+/* ===============================
+   STORAGE
+================================ */
+let played = JSON.parse(localStorage.getItem("playedMatches")) || [];
+
+/* ===============================
+   GENERATE MATCH
+================================ */
+function generateMatch() {
+  let attempts = 0;
+
+  while (attempts < 200) {
+    const home = teams[Math.floor(Math.random() * teams.length)];
+    const away = teams[Math.floor(Math.random() * teams.length)];
+
+    if (home === away) continue;
+
+    const key1 = home + "-" + away;
+    const key2 = away + "-" + home;
+
+    if (!played.includes(key1) && !played.includes(key2)) {
+      played.push(key1);
+      localStorage.setItem("playedMatches", JSON.stringify(played));
+
+      window.location.href =
+        `live-match.html?home=${encodeURIComponent(home)}&away=${encodeURIComponent(away)}`;
+      return;
+    }
+
+    attempts++;
+  }
+
+  document.getElementById("info").innerText =
+    "All possible matches have been played!";
+}
+</script>
+
+</body>
+</html>
